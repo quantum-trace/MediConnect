@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+enum NotificationType {
+  APPOINTMENT_BOOKED
+  APPOINTMENT_APPROVED
+  APPOINTMENT_REJECTED
+  APPOINTMENT_CANCELLED
+  APPOINTMENT_RESCHEDULED
+  AVAILABILITY_CHANGED
+  SYSTEM_ALERT
+  ADMIN_ANNOUNCEMENT
+  NEW_MESSAGE
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum Specialty {
+  CARDIOLOGY
+  DERMATOLOGY
+  NEUROLOGY
+  PEDIATRICS
+  ORTHOPEDICS
+  PSYCHIATRY
+  GENERAL_MEDICINE
+}
+
+enum ConsultationType {
+  VIDEO
+  IN_PERSON
+}
+
+enum DoctorStatus {
+  PENDING   // Profile created by admin, invitation not yet sent
+  INVITED   // Invitation email sent, awaiting doctor signup
+  ACTIVE    // Doctor completed signup and account is active
+  SUSPENDED // Admin has suspended this doctor account
+}
+
+model User {
+  id                      String                       @id @default(cuid())
+  clerkId                 String                       @unique
+  email                   String                       @unique
+  name                    String
+  imageUrl                String
+  role                    Role                         @default(PATIENT)
+  appointments            Appointment[]
+  notifications           Notification[]
+  prescriptions           Prescription[]               @relation("PatientPrescriptions")
+  notificationPreferences UserNotificationPreference[]
+  patientProfile          PatientProfile?
+  createdAt               DateTime                     @default(now())
+  updatedAt               DateTime                     @updatedAt
+}
+
+model Doctor {
+  id               String               @id @default(cuid())
+  clerkId          String?              @unique
+  email            String?              @unique
+  name             String
+  specialty        Specialty
+  experience       Int
+  consultationFee  Int
+  hospital         String
+  licenseNumber    String?
+  imageUrl         String               @default("")
+  available        Boolean              @default(true)
+  isApproved       Boolean              @default(false)
+  status           DoctorStatus         @default(PENDING)
+  appointments     Appointment[]
+  availability     DoctorAvailability[]
+  prescriptions    Prescription[]       @relation("DoctorPrescriptions")
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+}
+
+model DoctorAvailability {
+  id        String   @id @default(cuid())
+  doctorId  String
+  dayKey    String
+  enabled   Boolean  @default(true)
+  slots     String[]
+  doctor    Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([doctorId, dayKey])
+}
+
+model Appointment {
+  id               String            @id @default(cuid())
+  patientId        String
+  doctorId         String
+  date             DateTime
+  timeSlot         String
+  consultationType ConsultationType  @default(VIDEO)
+  status           AppointmentStatus @default(PENDING)
+  videoRoomUrl     String?
+  videoRoomName    String?
+  patient          User              @relation(fields: [patientId], references: [id])
+  doctor           Doctor            @relation(fields: [doctorId], references: [id])
+  notifications    Notification[]
+  prescription     Prescription?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Prescription {
+  id            String           @id @default(cuid())
+  appointmentId String           @unique
+  patientId     String
+  doctorId      String
+  diagnosis     String
+  notes         String?
+  followUpDate  DateTime?
+  followUpNotes String?
+  medications   MedicationItem[]
+  appointment   Appointment      @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  patient       User             @relation("PatientPrescriptions", fields: [patientId], references: [id])
+  doctor        Doctor           @relation("DoctorPrescriptions", fields: [doctorId], references: [id])
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([patientId, createdAt(sort: Desc)])
+  @@index([doctorId, createdAt(sort: Desc)])
+}
+
+model MedicationItem {
+  id             String       @id @default(cuid())
+  prescriptionId String
+  name           String
+  dosage         String
+  frequency      String
+  duration       String
+  instructions   String?
+  prescription   Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id            String           @id @default(cuid())
+  userId        String
+  type          NotificationType
+  title         String
+  message       String
+  link          String?
+  read          Boolean          @default(false)
+  appointmentId String?
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointment   Appointment?     @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, read])
+}
+
+model NotificationOption {
+  id          String                       @id @default(cuid())
+  key         String                       @unique
+  alias       String
+  description String
+  defaultOn   Boolean                      @default(true)
+  preferences UserNotificationPreference[]
+  createdAt   DateTime                     @default(now())
+  updatedAt   DateTime                     @updatedAt
+}
+
+model UserNotificationPreference {
+  id        String             @id @default(cuid())
+  userId    String
+  optionKey String
+  enabled   Boolean            @default(true)
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  option    NotificationOption @relation(fields: [optionKey], references: [key], onDelete: Cascade)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@unique([userId, optionKey])
+}
+
+model PatientProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  age       Int?
+  gender    String?
+  phone     String?
+  address   String?
+  bloodType String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SystemOption {
+  id        String   @id @default(cuid())
+  category  String   
+  key       String   @unique 
+  value     String   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
