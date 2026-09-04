@@ -85,4 +85,4 @@ NEXTAUTH_URL=
 
 ## Author
 
-Shubham Anand
+Priya Anand
