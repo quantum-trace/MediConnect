@@ -27,12 +27,12 @@ A modern doctor appointment booking platform built with Next.js, TypeScript, Pri
 - Next.js API Routes
 - Prisma ORM
 
-### Database
+**Database**
 
 - PostgreSQL
 - Neon PostgreSQL
 
-### Authentication & Video
+**Authentication & Video**
 
 - Clerk
 - Daily
@@ -48,12 +48,14 @@ scripts/
 Installation
 
 ## Clone the repository:
+```
 git clone https://github.com/quantum-trace/MediConnect.git
 cd MediConnect
-
+```
 ## Install dependencies:
+```
 npm install
-
+```
 ## Create a .env.local file:
 ```
 DATABASE_URL="your-postgresql-connection-string"
@@ -84,16 +86,18 @@ The application is deployed using Vercel.
 Production environment variables must be configured in the Vercel project settings.
 
 ## User Roles
-Role	Dashboard
-Patient	/dashboard
-Doctor	/doctor
-Admin	/admin
-Prisma Studio
+| Role | Dashboard |
+|------|-----------|
+| Patient | `/dashboard` |
+| Doctor | `/doctor` |
+| Admin | `/admin` |
 
 ## To view the database locally:
+```
 npx prisma studio
-
+```
 ## Useful Commands
+```
 npm run dev
 npm run build
 npm run start
@@ -104,7 +108,7 @@ npx prisma migrate deploy
 npx prisma db push
 npx prisma db seed
 npx prisma studio
-
+```
 ## Future Improvements
 Online Payment Integration
 AI Health Assistant
