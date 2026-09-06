@@ -44,7 +44,7 @@ scripts/
 Clone the repository:
 
 ```bash
-git clone https://github.com/Shubham2310D/MediConnect.git
+git clone https://github.com/quantum-trace/MediConnect.git
 ```
 
 Install dependencies:
