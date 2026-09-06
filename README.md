@@ -48,16 +48,16 @@ scripts/
 Installation
 
 ## Clone the repository:
-```
+```bash
 git clone https://github.com/quantum-trace/MediConnect.git
 cd MediConnect
 ```
 ## Install dependencies:
-```
+```bash
 npm install
 ```
 ## Create a .env.local file:
-```
+```bash
 DATABASE_URL="your-postgresql-connection-string"
 
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="your-clerk-publishable-key"
@@ -68,19 +68,23 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 DAILY_API_KEY="your-daily-api-key"
 ```
 ## Setup the database:
+```bash
 npx prisma generate
 npx prisma migrate deploy
 npx prisma db seed
-
+```
 ## For a fresh development database:
+```bash
 npx prisma db push
-
+```
 ## Run the development server:
+```bash
 npm run dev
-
+```
 ## Open:
+```bash
 http://localhost:3000
-
+```
 ## Deployment
 The application is deployed using Vercel.
 Production environment variables must be configured in the Vercel project settings.
@@ -93,11 +97,11 @@ Production environment variables must be configured in the Vercel project settin
 | Admin | `/admin` |
 
 ## To view the database locally:
-```
+```bash
 npx prisma studio
 ```
 ## Useful Commands
-```
+```bash
 npm run dev
 npm run build
 npm run start
