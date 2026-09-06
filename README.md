@@ -1,6 +1,6 @@
 # MediConnect - Doctor Appointment App
 
-A modern doctor appointment booking platform built with Next.js, TypeScript, Prisma, and PostgreSQL.
+A modern doctor appointment booking platform built with Next.js, TypeScript, Prisma, PostgreSQL, and Clerk.
 
 ## Features
 
@@ -9,24 +9,21 @@ A modern doctor appointment booking platform built with Next.js, TypeScript, Pri
 - Doctor Approval & Availability Management
 - Appointment Booking & Scheduling
 - In-Person & Video Consultations
-- Authentication & Authorization with Clerk
+- Authentication & Authorization
 - Patient, Doctor & Admin Dashboards
 - Prescription & Medical Record Management
 - Notifications
 - Responsive User Interface
-- Database Management with Prisma
 
 ## Tech Stack
 
-### Frontend
-
+**Frontend**
 - Next.js
 - React
 - TypeScript
 - Tailwind CSS
 
-### Backend
-
+**Backend**
 - Next.js API Routes
 - Prisma ORM
 
@@ -41,8 +38,6 @@ A modern doctor appointment booking platform built with Next.js, TypeScript, Pri
 - Daily
 
 ## Project Structure
-
-```text
 app/
 components/
 hooks/
@@ -52,17 +47,15 @@ public/
 scripts/
 Installation
 
-Clone the repository:
-
+## Clone the repository:
 git clone https://github.com/quantum-trace/MediConnect.git
 cd MediConnect
 
-Install dependencies:
-
+## Install dependencies:
 npm install
 
-Create a .env.local file and add:
-
+## Create a .env.local file:
+```
 DATABASE_URL="your-postgresql-connection-string"
 
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="your-clerk-publishable-key"
@@ -71,39 +64,36 @@ CLERK_SECRET_KEY="your-clerk-secret-key"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
 DAILY_API_KEY="your-daily-api-key"
-CRON_SECRET="your-cron-secret"
-
-Generate Prisma Client and setup the database:
-
+```
+## Setup the database:
 npx prisma generate
 npx prisma migrate deploy
-
-For a fresh development database:
-
-npx prisma db push
-
-Seed sample data:
-
 npx prisma db seed
 
-Run the development server:
+## For a fresh development database:
+npx prisma db push
 
+## Run the development server:
 npm run dev
 
-Open:
-
+## Open:
 http://localhost:3000
-User Roles
+
+## Deployment
+The application is deployed using Vercel.
+Production environment variables must be configured in the Vercel project settings.
+
+## User Roles
 Role	Dashboard
 Patient	/dashboard
 Doctor	/doctor
 Admin	/admin
 Prisma Studio
 
-To view the database:
-
+## To view the database locally:
 npx prisma studio
-Useful Commands
+
+## Useful Commands
 npm run dev
 npm run build
 npm run start
@@ -114,12 +104,13 @@ npx prisma migrate deploy
 npx prisma db push
 npx prisma db seed
 npx prisma studio
-Future Improvements
+
+## Future Improvements
 Online Payment Integration
 AI Health Assistant
-Advanced Medical Records
 Real-Time Chat
+Advanced Medical Records
 Improved Video Consultation Features
 
-Author
+## Author
 Priya Anand
